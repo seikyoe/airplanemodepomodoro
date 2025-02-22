@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, scrolledtext
 import time
 import subprocess
 import ctypes
@@ -21,20 +21,20 @@ timer = None
 wifi_enabled = True
 
 # Dark mode colors
-BG_COLOR = "#2E3440"  # Dark background
-FG_COLOR = "#D8DEE9"  # Light text
-BUTTON_BG = "#4C566A"  # Dark button background
-BUTTON_FG = "#ECEFF4"  # Light button text
-BUTTON_ACTIVE_BG = "#5E81AC"  # Active button background
-ENTRY_BG = "#3B4252"  # Dark entry background
-ENTRY_FG = "#E5E9F0"  # Light entry text
+BG_COLOR = "#2E3440"
+FG_COLOR = "#D8DEE9"
+BUTTON_BG = "#4C566A"
+BUTTON_FG = "#ECEFF4"
+BUTTON_ACTIVE_BG = "#5E81AC"
+ENTRY_BG = "#3B4252"
+ENTRY_FG = "#E5E9F0"
+NOTES_BG = "#3B4252"
+NOTES_FG = "#E5E9F0"
 
 def run_as_admin():
-    """Request administrator privileges."""
     if ctypes.windll.shell32.IsUserAnAdmin():
         return True
     else:
-        # Re-launch the script with administrator privileges
         ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
         return False
 
@@ -115,6 +115,11 @@ def save_settings():
         messagebox.showerror("Invalid Input", "Please enter positive numbers only")
         reset_fields()
 
+def save_notes():
+    with open("pomodoro_notes.txt", "w") as f:
+        f.write(notes_text.get("1.0", tk.END))
+    messagebox.showinfo("Notes Saved", "Your notes have been saved!")
+
 def reset_fields():
     work_entry.delete(0, tk.END)
     work_entry.insert(0, DEFAULT_WORK)
@@ -129,16 +134,24 @@ if not run_as_admin():
 
 # GUI Setup
 window = tk.Tk()
-window.title("Pomodoro Timer")
-window.geometry("500x450")
+window.title("Pomodoro Timer with Notes")
+window.geometry("800x500")
 window.configure(bg=BG_COLOR)
 
+# Main container
+main_frame = tk.Frame(window, bg=BG_COLOR)
+main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+
+# Left Panel (Pomodoro)
+left_frame = tk.Frame(main_frame, bg=BG_COLOR)
+left_frame.grid(row=0, column=0, padx=20, sticky="nsew")
+
 # Timer Display
-timer_label = tk.Label(window, text="25:00", font=("Helvetica", 48, "bold"), bg=BG_COLOR, fg=FG_COLOR)
+timer_label = tk.Label(left_frame, text="25:00", font=("Helvetica", 48, "bold"), bg=BG_COLOR, fg=FG_COLOR)
 timer_label.pack(pady=20)
 
 # Control Buttons
-control_frame = tk.Frame(window, bg=BG_COLOR)
+control_frame = tk.Frame(left_frame, bg=BG_COLOR)
 control_frame.pack(pady=10)
 
 start_button = tk.Button(control_frame, text="Start", command=start_timer, bg=BUTTON_BG, fg=BUTTON_FG,
@@ -150,7 +163,7 @@ reset_button = tk.Button(control_frame, text="Reset", command=reset_timer, bg=BU
 reset_button.grid(row=0, column=1, padx=10)
 
 # Settings Frame
-settings_frame = tk.LabelFrame(window, text="Settings", bg=BG_COLOR, fg=FG_COLOR, font=("Helvetica", 12, "bold"))
+settings_frame = tk.LabelFrame(left_frame, text="Settings", bg=BG_COLOR, fg=FG_COLOR, font=("Helvetica", 12, "bold"))
 settings_frame.pack(pady=20, padx=20, fill="x")
 
 # Work Time Setting
@@ -177,8 +190,40 @@ save_button = tk.Button(settings_frame, text="Save Settings", command=save_setti
 save_button.grid(row=3, columnspan=2, pady=10)
 
 # Wi-Fi Button
-wifi_button = tk.Button(window, text="Disable Wi-Fi", command=toggle_wifi, bg=BUTTON_BG, fg=BUTTON_FG,
+wifi_button = tk.Button(left_frame, text="Disable Wi-Fi", command=toggle_wifi, bg=BUTTON_BG, fg=BUTTON_FG,
                         font=("Helvetica", 12), padx=20, pady=10, relief="flat", activebackground=BUTTON_ACTIVE_BG)
 wifi_button.pack(pady=10)
+
+# Right Panel (Notes)
+right_frame = tk.Frame(main_frame, bg=BG_COLOR)
+right_frame.grid(row=0, column=1, padx=20, sticky="nsew")
+
+# Notes Label
+notes_label = tk.Label(right_frame, text="Session Notes", bg=BG_COLOR, fg=FG_COLOR, font=("Helvetica", 14, "bold"))
+notes_label.pack(pady=10)
+
+# Notes Text Area
+notes_text = scrolledtext.ScrolledText(right_frame, wrap=tk.WORD, width=40, height=20,
+                                      bg=NOTES_BG, fg=NOTES_FG, insertbackground=FG_COLOR,
+                                      font=("Helvetica", 12))
+notes_text.pack(fill=tk.BOTH, expand=True)
+
+# Load existing notes
+try:
+    with open("pomodoro_notes.txt", "r") as f:
+        notes_text.insert(tk.END, f.read())
+except FileNotFoundError:
+    pass
+
+# Save Notes Button
+save_notes_btn = tk.Button(right_frame, text="Save Notes", command=save_notes,
+                          bg=BUTTON_BG, fg=BUTTON_FG, font=("Helvetica", 12),
+                          padx=15, pady=8, relief="flat", activebackground=BUTTON_ACTIVE_BG)
+save_notes_btn.pack(pady=10)
+
+# Configure grid weights
+main_frame.grid_columnconfigure(0, weight=1)
+main_frame.grid_columnconfigure(1, weight=1)
+main_frame.grid_rowconfigure(0, weight=1)
 
 window.mainloop()
