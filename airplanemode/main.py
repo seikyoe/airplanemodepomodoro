@@ -96,21 +96,44 @@ if not run_as_admin():
 # GUI Setup
 window = tk.Tk()
 window.title("Pomodoro Timer")
-window.config(padx=50, pady=50, bg="#f7f5dd")
+window.geometry("400x300")  # Set a fixed window size
+window.resizable(False, False)  # Disable resizing
+window.configure(bg="#f0f0f0")  # Set a light background color
+
+# Custom Styles for Buttons
+button_style = {
+    "font": ("Helvetica", 12),
+    "bg": "#4CAF50",  # Green background
+    "fg": "white",    # White text
+    "borderwidth": 0,
+    "relief": "flat",
+    "padx": 20,
+    "pady": 10,
+    "activebackground": "#45a049",  # Darker green when pressed
+    "activeforeground": "white",
+}
 
 # Timer Label
-timer_label = tk.Label(window, text="25:00", font=("Arial", 40, "bold"), bg="#f7f5dd", fg="#000000")
-timer_label.grid(row=0, column=1)
+timer_label = tk.Label(window, text="25:00", font=("Helvetica", 48, "bold"), bg="#f0f0f0", fg="#333333")
+timer_label.pack(pady=20)
 
-# Buttons
-start_button = tk.Button(window, text="Start", command=start_timer, bg="#ffffff", fg="#000000")
-start_button.grid(row=1, column=0)
+# Buttons Frame
+button_frame = tk.Frame(window, bg="#f0f0f0")
+button_frame.pack(pady=10)
 
-reset_button = tk.Button(window, text="Reset", command=reset_timer, bg="#ffffff", fg="#000000")
-reset_button.grid(row=1, column=2)
+# Start Button
+start_button = tk.Button(button_frame, text="Start", command=start_timer, **button_style)
+start_button.grid(row=0, column=0, padx=10)
 
-wifi_button = tk.Button(window, text="Disable Wi-Fi", command=toggle_wifi, bg="#ffffff", fg="#000000")
-wifi_button.grid(row=2, column=1)
+# Reset Button
+reset_button = tk.Button(button_frame, text="Reset", command=reset_timer, **button_style)
+reset_button.config(bg="#f44336", activebackground="#d32f2f")  # Red background
+reset_button.grid(row=0, column=1, padx=10)
+
+# Wi-Fi Button
+wifi_button = tk.Button(window, text="Disable Wi-Fi", command=toggle_wifi, **button_style)
+wifi_button.config(bg="#2196F3", activebackground="#1976D2")  # Blue background
+wifi_button.pack(pady=10)
 
 # Run the app
 window.mainloop()
