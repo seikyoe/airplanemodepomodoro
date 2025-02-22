@@ -20,11 +20,21 @@ is_running = False
 timer = None
 wifi_enabled = True
 
+# Dark mode colors
+BG_COLOR = "#2E3440"  # Dark background
+FG_COLOR = "#D8DEE9"  # Light text
+BUTTON_BG = "#4C566A"  # Dark button background
+BUTTON_FG = "#ECEFF4"  # Light button text
+BUTTON_ACTIVE_BG = "#5E81AC"  # Active button background
+ENTRY_BG = "#3B4252"  # Dark entry background
+ENTRY_FG = "#E5E9F0"  # Light entry text
+
 def run_as_admin():
     """Request administrator privileges."""
     if ctypes.windll.shell32.IsUserAnAdmin():
         return True
     else:
+        # Re-launch the script with administrator privileges
         ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
         return False
 
@@ -121,54 +131,54 @@ if not run_as_admin():
 window = tk.Tk()
 window.title("Pomodoro Timer")
 window.geometry("500x450")
-window.configure(bg="#f0f0f0")
+window.configure(bg=BG_COLOR)
 
 # Timer Display
-timer_label = tk.Label(window, text="25:00", font=("Helvetica", 48, "bold"), bg="#f0f0f0", fg="#333333")
+timer_label = tk.Label(window, text="25:00", font=("Helvetica", 48, "bold"), bg=BG_COLOR, fg=FG_COLOR)
 timer_label.pack(pady=20)
 
 # Control Buttons
-control_frame = tk.Frame(window, bg="#f0f0f0")
+control_frame = tk.Frame(window, bg=BG_COLOR)
 control_frame.pack(pady=10)
 
-start_button = tk.Button(control_frame, text="Start", command=start_timer, bg="#4CAF50", fg="white",
-                         font=("Helvetica", 12), padx=20, pady=10, relief="flat")
+start_button = tk.Button(control_frame, text="Start", command=start_timer, bg=BUTTON_BG, fg=BUTTON_FG,
+                         font=("Helvetica", 12), padx=20, pady=10, relief="flat", activebackground=BUTTON_ACTIVE_BG)
 start_button.grid(row=0, column=0, padx=10)
 
-reset_button = tk.Button(control_frame, text="Reset", command=reset_timer, bg="#f44336", fg="white",
-                         font=("Helvetica", 12), padx=20, pady=10, relief="flat")
+reset_button = tk.Button(control_frame, text="Reset", command=reset_timer, bg=BUTTON_BG, fg=BUTTON_FG,
+                         font=("Helvetica", 12), padx=20, pady=10, relief="flat", activebackground=BUTTON_ACTIVE_BG)
 reset_button.grid(row=0, column=1, padx=10)
 
 # Settings Frame
-settings_frame = tk.LabelFrame(window, text="Settings", bg="#f0f0f0", font=("Helvetica", 12, "bold"))
+settings_frame = tk.LabelFrame(window, text="Settings", bg=BG_COLOR, fg=FG_COLOR, font=("Helvetica", 12, "bold"))
 settings_frame.pack(pady=20, padx=20, fill="x")
 
 # Work Time Setting
-tk.Label(settings_frame, text="Work (min):", bg="#f0f0f0").grid(row=0, column=0, padx=5, pady=5)
-work_entry = tk.Entry(settings_frame, width=5)
+tk.Label(settings_frame, text="Work (min):", bg=BG_COLOR, fg=FG_COLOR).grid(row=0, column=0, padx=5, pady=5)
+work_entry = tk.Entry(settings_frame, width=5, bg=ENTRY_BG, fg=ENTRY_FG, insertbackground=FG_COLOR, relief="flat")
 work_entry.grid(row=0, column=1, padx=5, pady=5)
 work_entry.insert(0, DEFAULT_WORK)
 
 # Short Break Setting
-tk.Label(settings_frame, text="Short Break (min):", bg="#f0f0f0").grid(row=1, column=0, padx=5, pady=5)
-short_entry = tk.Entry(settings_frame, width=5)
+tk.Label(settings_frame, text="Short Break (min):", bg=BG_COLOR, fg=FG_COLOR).grid(row=1, column=0, padx=5, pady=5)
+short_entry = tk.Entry(settings_frame, width=5, bg=ENTRY_BG, fg=ENTRY_FG, insertbackground=FG_COLOR, relief="flat")
 short_entry.grid(row=1, column=1, padx=5, pady=5)
 short_entry.insert(0, DEFAULT_SHORT_BREAK)
 
 # Long Break Setting
-tk.Label(settings_frame, text="Long Break (min):", bg="#f0f0f0").grid(row=2, column=0, padx=5, pady=5)
-long_entry = tk.Entry(settings_frame, width=5)
+tk.Label(settings_frame, text="Long Break (min):", bg=BG_COLOR, fg=FG_COLOR).grid(row=2, column=0, padx=5, pady=5)
+long_entry = tk.Entry(settings_frame, width=5, bg=ENTRY_BG, fg=ENTRY_FG, insertbackground=FG_COLOR, relief="flat")
 long_entry.grid(row=2, column=1, padx=5, pady=5)
 long_entry.insert(0, DEFAULT_LONG_BREAK)
 
 # Save Button
-save_button = tk.Button(settings_frame, text="Save Settings", command=save_settings, bg="#2196F3", fg="white",
-                        font=("Helvetica", 10), padx=10, pady=5)
+save_button = tk.Button(settings_frame, text="Save Settings", command=save_settings, bg=BUTTON_BG, fg=BUTTON_FG,
+                        font=("Helvetica", 10), padx=10, pady=5, relief="flat", activebackground=BUTTON_ACTIVE_BG)
 save_button.grid(row=3, columnspan=2, pady=10)
 
 # Wi-Fi Button
-wifi_button = tk.Button(window, text="Disable Wi-Fi", command=toggle_wifi, bg="#2196F3", fg="white",
-                        font=("Helvetica", 12), padx=20, pady=10)
+wifi_button = tk.Button(window, text="Disable Wi-Fi", command=toggle_wifi, bg=BUTTON_BG, fg=BUTTON_FG,
+                        font=("Helvetica", 12), padx=20, pady=10, relief="flat", activebackground=BUTTON_ACTIVE_BG)
 wifi_button.pack(pady=10)
 
 window.mainloop()
