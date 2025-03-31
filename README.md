@@ -1,4 +1,3 @@
-```markdown
 # Airplane Mode Pomodoro ✈️🍅
 
 A simple Pomodoro timer with a twist: it can disable and enable Wi-Fi with a single click! This project was born out of boredom and a desire for a distraction-free work environment. While it might not be the prettiest, it gets the job done.
@@ -53,4 +52,3 @@ There is currently one open issue.  Please check the [issues](https://github.com
 ## Disclaimer ⚠️
 
 This project is provided as-is and may not be regularly updated. Use at your own risk.
-```
